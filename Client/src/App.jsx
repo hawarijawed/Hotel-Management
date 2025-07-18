@@ -1,12 +1,17 @@
 import { useState } from 'react'
+import Navbar from './components/Navbar'
+import { useLocation } from 'react-router-dom'
 
 
 function App() {
-  
+  const isOwner = useLocation().pathname.includes("owner");
+
   return (
     <>
-      <p>My name is Jawed Hawari</p>
-      <p>Aur batao Kaise Ho</p>
+    {
+      !isOwner && <Navbar />
+    }
+      
     </>
   )
 }
