@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {assets} from '../assets/assets';
-import { SignUpButton, useClerk, UserButton, useUser } from "@clerk/clerk-react";
+import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
 
 const BookIcon = ()=>{
     <svg className="w-4 h-4 text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" >
@@ -35,14 +35,14 @@ const Navbar = () => {
         setIsScrolled(prev => location.pathname !== '/'?true: prev);
 
         const handleScroll = () => {
-            setIsScrolled(window.screenY > 10);
+            setIsScrolled(window.scrollY > 10);
         };
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, [location.pathname]);
 
     return (
-            <nav className={`fixed top-0 left-0 bg-transparent w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${isScrolled ? "bg-white/80 shadow-md text-gray-700 backdrop-blur-lg py-3 md:py-4" : "py-4 md:py-6"}`}>
+            <nav className={`fixed top-0 left-0 w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${isScrolled ? "bg-white/20 shadow-md text-gray-700 backdrop-blur-lg py-3 md:py-4" : "py-4 md:py-6"}`}>
 
                 {/* Logo */}
                 <Link to='/'>
