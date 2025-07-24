@@ -13,6 +13,7 @@ const Home = () => {
       <ExclusiveOffer />
       <Testimonial />
       <NewsLetter />
+      
     </>
   )
 }
