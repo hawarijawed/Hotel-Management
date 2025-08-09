@@ -23,9 +23,7 @@ const AddRoom = () => {
   })
   return (
     <form action="">
-      <Title align='left' font='outfit' title='Add Rooms' subtitle='Fill in the
-       details carefully. Enter accurate room details, pricing, and amenities, in order to enhance 
-       the user booking experience' />
+      <Title align='left' font='outfit' title='Room Listings' subtitle='View, edit, or manage all listed rooms. Keep the information up to date to provide the best experience for users.' />
 
        {/* Upload Area for Images */}
        <p className='text-gray-800 mt-10'>Images</p>
