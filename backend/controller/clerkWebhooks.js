@@ -15,12 +15,23 @@ const clerkWebHooks = async (req, res) => {
         const event = await webHooks.verify(payload, headers);
         const { data, type } = event;
 
-        const userData = {
-            email: data.email_addresses[0].email_address,
-            username: data.first_name + " " + data.last_name,
-            image: data.image_url,
-        };
+        //console.log(data);
+        
+        //--------Old one -------------//
+        // const userData = {
+        //     email: data.email_addresses[0].email_address,
+        //     username: data.first_name + " " + data.last_name,
+        //     image: data.image_url,
+        // };
 
+
+        //----------New One -----------//
+        const userData = {
+            _id: data.id,
+            username: `${data.first_name || ""} ${data.last_name || ""}`.trim(),
+            email: data.email_addresses?.[0]?.email_address || "defaultmail@gmail.com",
+            image: data.image_url || null,
+        }
         console.log(userData);
         
         switch (type) {
