@@ -12,11 +12,12 @@ const app = express();
 app.use(cors());
 
 //Middlewares
+app.post("/api/clerk", express.raw({ type: 'application/json' }), clerkWebHooks);
+
 app.use(express.json());
 // app.use(clerkMiddleware());
-app.use('/webhook', express.raw({ type: 'application/json' }));
 // app.post('/webhook', clerkWebHooks);
-app.use("/api/clerk", clerkWebHooks);
+// app.use("/api/clerk", clerkWebHooks);
 
 app.get('/',(req, res) =>res.send("Hello from server..we are do date"));
 
