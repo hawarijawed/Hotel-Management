@@ -1,36 +1,29 @@
-import { useDebugValue } from "react";
 import User from "../models/User.js";
 import { Webhook } from "svix";
 
-const clerkWebHooks = async (res, req) => {
+const clerkWebHooks = async (req, res) => {
     try {
-        //Svix instance with clerk
-        const webHooks = new Webhook(process.env.CLERK_WEBHOOKS)
+        const webHooks = new Webhook(process.env.CLERK_WEBHOOKS);
 
-        //Getting headers
         const headers = {
-            "svix-id":req.headers["svix-id"],
-            "svix-timestamp":req.headers["svix-timestamp"],
-            "svix-signature":req.headers["svix-signature"],
+            "svix-id": req.headers["svix-id"],
+            "svix-timestamp": req.headers["svix-timestamp"],
+            "svix-signature": req.headers["svix-signature"],
         };
 
-        //Verifying headers
-        await webHooks.verify(JSON.stringify(req.body), headers);
-
-        //Gettin data from req body
-        const {data, type} = req.body;
+        const payload = req.body; // Should be raw Buffer if middleware is set
+        const event = await webHooks.verify(payload, headers);
+        const { data, type } = event;
 
         const userData = {
-            _id: data._id,
-            email: data.email_addresses[0].email_addresse,
-            username: data.first_name+" "+data.last_name,
+            email: data.email_addresses[0].email_address,
+            username: data.first_name + " " + data.last_name,
             image: data.image_url,
-        }
+        };
 
-        //Switch case for different events
         switch (type) {
             case "user.created":
-                await User.create(userData);
+                await User.create({ ...userData, _id: data.id });
                 break;
             case "user.updated":
                 await User.findByIdAndUpdate(data.id, userData);
@@ -39,14 +32,15 @@ const clerkWebHooks = async (res, req) => {
                 await User.findByIdAndDelete(data.id);
                 break;
             default:
+                console.log(`Unhandled event type: ${type}`);
                 break;
         }
 
-        res.json({success:true, message:"Webhook received"})
+        res.json({ success: true, message: "Webhook received" });
     } catch (error) {
-        console.log("Error: ",error.message)
-        res.json({success:false, message:error.message});
+        console.log("Error: ", error.message);
+        res.status(400).json({ success: false, message: error.message });
     }
-}
+};
 
 export default clerkWebHooks;

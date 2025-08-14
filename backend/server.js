@@ -13,8 +13,9 @@ app.use(cors());
 
 //Middlewares
 app.use(express.json());
-app.use(clerkMiddleware());
-
+// app.use(clerkMiddleware());
+app.use('/webhook', express.raw({ type: 'application/json' }));
+// app.post('/webhook', clerkWebHooks);
 app.use("/api/clerk", clerkWebHooks);
 
 app.get('/',(req, res) =>res.send("Hello from server..we are do date"));
