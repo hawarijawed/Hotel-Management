@@ -21,6 +21,8 @@ const clerkWebHooks = async (req, res) => {
             image: data.image_url,
         };
 
+        console.log(userData);
+        
         switch (type) {
             case "user.created":
                 await User.create({ ...userData, _id: data.id });
