@@ -3,9 +3,11 @@ import { Webhook } from "svix";
 import connectDB from '../config/db.js'
 import { getAuth } from "@clerk/express";
 import { getRawBody } from "../config/getRawBody.js";
+import connectCloudinary from "../config/cloudinary.js";
 const clerkWebHooks = async (req, res) => {
     try {
         await connectDB();
+        await connectCloudinary();
         const webHooks = new Webhook(process.env.CLERK_WEBHOOKS);
         const payload = req.body; // Should be raw Buffer if
         const headers = {
