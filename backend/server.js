@@ -5,7 +5,7 @@ import connectDB from './config/db.js';
 import { clerkMiddleware } from '@clerk/express'
 import clerkWebHooks from './controller/clerkWebhooks.js';
 
-connectDB();
+await connectDB();
 const PORT = process.env.PORT || 8000;
 const app = express();
 
