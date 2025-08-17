@@ -1,3 +1,4 @@
+import { getRawBody } from "../config/getRawBody.js";
 import User from "../models/User.js";
 import { Webhook } from "svix";
 
@@ -11,11 +12,13 @@ const clerkWebHooks = async (req, res) => {
             "svix-signature": req.headers["svix-signature"],
         };
 
-        const payload = req.body; // Should be raw Buffer if middleware is set
+        const payload = getRawBody(req); // Should be raw Buffer if
+        //
+        // middleware is set
         const event = await webHooks.verify(payload, headers);
         const { data, type } = event;
 
-        //console.log(data);
+        console.log(type);
         
         //--------Old one -------------//
         // const userData = {
