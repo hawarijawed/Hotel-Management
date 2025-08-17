@@ -3,6 +3,7 @@ import { Webhook } from "svix";
 
 const clerkWebHooks = async (req, res) => {
     try {
+        await connectDB();
         const webHooks = new Webhook(process.env.CLERK_WEBHOOKS);
 
         const headers = {
