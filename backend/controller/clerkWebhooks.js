@@ -7,7 +7,7 @@ const clerkWebHooks = async (req, res) => {
     try {
         await connectDB();
         const webHooks = new Webhook(process.env.CLERK_WEBHOOKS);
-        const payload = getRawBody(req); // Should be raw Buffer if
+        const payload = req.body; // Should be raw Buffer if
         const headers = {
             "svix-id": req.headers["svix-id"],
             "svix-timestamp": req.headers["svix-timestamp"],
