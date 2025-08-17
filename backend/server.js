@@ -12,7 +12,7 @@ const app = express();
 app.use(cors());
 
 //Middlewares
-app.post("/api/clerk", clerkWebHooks); //express.raw({ type: 'application/json' }),
+app.post("/api/clerk", express.raw({ type: 'application/json' }), clerkWebHooks);
 
 app.use(express.json());
 // app.use(clerkMiddleware());
