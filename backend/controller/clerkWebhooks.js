@@ -1,18 +1,20 @@
 import User from "../models/User.js";
 import { Webhook } from "svix";
 import connectDB from '../config/db.js'
+import { getAuth } from "@clerk/express";
+import { getRawBody } from "../config/getRawBody.js";
 const clerkWebHooks = async (req, res) => {
     try {
         await connectDB();
         const webHooks = new Webhook(process.env.CLERK_WEBHOOKS);
-
+        const payload = getRawBody(req); // Should be raw Buffer if
         const headers = {
             "svix-id": req.headers["svix-id"],
             "svix-timestamp": req.headers["svix-timestamp"],
             "svix-signature": req.headers["svix-signature"],
         };
 
-        const payload = req.body; // Should be raw Buffer if
+        
         //
         // middleware is set
         const event = await webHooks.verify(payload, headers);
