@@ -14,14 +14,14 @@ const clerkWebHooks = async (req, res) => {
             "svix-signature": req.headers["svix-signature"],
         };
 
-        
+
         //
         // middleware is set
         const event = await webHooks.verify(payload, headers);
         const { data, type } = event;
 
         console.log(type);
-        
+
         //--------Old one -------------//
         // const userData = {
         //     email: data.email_addresses[0].email_address,
@@ -38,16 +38,34 @@ const clerkWebHooks = async (req, res) => {
             image: data.image_url || null,
         }
         console.log(userData);
-        
+
         switch (type) {
             case "user.created":
                 await User.create({ ...userData, _id: data.id });
                 break;
             case "user.updated":
-                await User.findByIdAndUpdate(data.id, userData);
+                const user = await User.findById(data.id);
+                if (user) {
+                    user._id = data.id;
+                    user.username = userData.username;
+                    user.email = userData.email;
+                    user.image = userData.image;
+
+                    await user.save();
+                }
+                else {
+                    console.log("User not found ");
+
+                }
                 break;
             case "user.deleted":
-                await User.findByIdAndDelete(data.id);
+                const user_del = await User.findById(data.id);
+
+                if (user_del) {
+                    await user_del.deleteOne(); // preferred in modern Mongoose
+                } else {
+                    console.log("User not found for deletion");
+                }
                 break;
             default:
                 console.log(`Unhandled event type: ${type}`);
