@@ -7,6 +7,7 @@ import clerkWebHooks from './controller/clerkWebhooks.js';
 import userRouter from './routes/userRoutes.js';
 import hotelRouter from './routes/hotelRoutes.js';
 import roomRouter from './routes/roomRoutes.js';
+import bookingRouter from './routes/bookingRoutes.js';
 
 // await connectDB();
 const PORT = process.env.PORT || 8000;
@@ -28,4 +29,5 @@ app.get('/',(req, res) =>res.send("Hello from server..we are do date"));
 app.use('/api/user', userRouter);
 app.use('/api/hotels', hotelRouter);
 app.use('/api/rooms', roomRouter);
+app.use('/api/bookings', bookingRouter);
 app.listen(PORT,()=>console.log(`App started...: http://localhost:${PORT}/`))
