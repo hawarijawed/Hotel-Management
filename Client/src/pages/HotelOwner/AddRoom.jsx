@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import Title from '../../components/Title'
 import {assets} from '../../assets/assets'
+import { useAppContext } from '../../context/AppContext'
+import toast from 'react-hot-toast'
 const AddRoom = () => {
 
+  const {axios, getToken} = useAppContext();
   const [images, setImages] = useState({
     1:null,
     2:null,
@@ -10,6 +13,7 @@ const AddRoom = () => {
     4:null
   })
 
+  const [loading, setLoading] = useState(false);
   const [inputs, setInputs] = useState({
     roomType:"",
     pricePerNight:0,
@@ -20,9 +24,66 @@ const AddRoom = () => {
       'Mountain View': false,
       'Pool Access': false,
     }
-  })
+  });
+
+  const onSubmitHandler = async (e) =>{
+    e.preventDefault();
+    if(!inputs.roomType ||
+       !inputs.pricePerNight ||
+       !inputs.amenities ||
+       !Object.values(images).some(image => image)
+    ){
+      toast.error("Some details are missing");
+    }
+
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('roomType', inputs.roomType);
+      formData.append('pricePerNight', inputs.pricePerNight);
+      const amenities = Object.keys(inputs.amenities).filter(key => inputs.amenities[key]);
+      formData.append('amenities', JSON.stringify(amenities));
+      
+      Object.keys(images).forEach((key) =>{
+        images[key] && formData.append('images', images[key])
+      });
+
+      const {data} = await axios.post('/api/rooms', formData,{
+        headers: `Bearer ${await getToken}`
+      });
+
+      if(data.success){
+        toast.success(data.message);
+        setInputs({
+          roomType:'',
+          pricePerNight:0,
+          amenities:{
+            'Free Wifi': false,
+            'Free Breakfast': false,
+            'Room Service': false,
+            'Mountain View': false,
+            'Pool Access': false,
+          }
+        })
+        setImages({
+          1:null,
+          2:null,
+          3:null,
+          4:null,
+        });
+      }
+      else{
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+    finally{
+      setLoading(false);
+    }
+  }
   return (
-    <form action="">
+    <form action="" onSubmit={onSubmitHandler}>
       <Title align='left' font='outfit' title='Room Listings' subtitle='View, edit, or manage all listed rooms. Keep the information up to date to provide the best experience for users.' />
 
        {/* Upload Area for Images */}
@@ -44,10 +105,10 @@ const AddRoom = () => {
             <p className='text-gray-800 mt-4'>Room Type</p>
             <select className='border opacity-70 border-gray-300 mt-1 rounded p-2 w-full'>
               <option value="">Select Room Type</option>
-              <option value="Single Bed">Select Room Type</option>
-              <option value="Double Bed">Select Room Type</option>
-              <option value="Luxury Room">Select Room Type</option>
-              <option value="Family Suite">Fanimily </option>
+              <option value="Single Bed">Single Bed</option>
+              <option value="Double Bed">Double Bed</option>
+              <option value="Luxury Room">Luxury Room</option>
+              <option value="Family Suite">Family Suit</option>
             </select>
           </div>
 
