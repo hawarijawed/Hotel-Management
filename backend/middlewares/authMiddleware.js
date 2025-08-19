@@ -2,7 +2,7 @@ import { use } from "react";
 import User from "../models/User.js";
 
 //To check if the user is authenticated
-export const protect = async(req, resizeBy, next) =>{
+export const protect = async(req, res, next) =>{
     const {userId} = req.auth;
     if(!userId){
         res.json({success:false, message:"User not authenticated"});

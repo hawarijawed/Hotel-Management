@@ -8,12 +8,15 @@ import userRouter from './routes/userRoutes.js';
 import hotelRouter from './routes/hotelRoutes.js';
 import roomRouter from './routes/roomRoutes.js';
 import bookingRouter from './routes/bookingRoutes.js';
+import connectCloudinary from './config/cloudinary.js';
 
-// await connectDB();
+await connectDB();
+await connectCloudinary();
 const PORT = process.env.PORT || 8000;
 const app = express();
 
 app.use(cors());
+
 
 //Middlewares
 app.post("/api/clerk", express.raw({ type: 'application/json' }), clerkWebHooks);
