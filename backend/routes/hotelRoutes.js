@@ -5,6 +5,6 @@ import { requireAuth } from '@clerk/express';
 
 const hotelRouter = express.Router();
 
-hotelRouter.post('/', requireAuth(),protect, registerHotel)
+hotelRouter.post('/', requireAuth() ,protect, registerHotel)
 
 export default hotelRouter;
