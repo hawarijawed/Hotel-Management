@@ -13,7 +13,7 @@ const Layout = () => {
     }
   },[isOwner]);
   return (
-    <div className='flex flex-col h-screen'>
+    <div className='flex flex-col h-screen mb-33'>
       <NavBar />
       <div className='flex h-full'>
         <SideBar />

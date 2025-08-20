@@ -25,11 +25,12 @@ app.use(express.json());
 // app.post('/webhook', clerkWebHooks);
 // app.use("/api/clerk", clerkWebHooks);
 
-app.get('/',(req, res) =>res.send("Hello from server..we are do date"));
 
 
 app.use('/api/user', userRouter);
 app.use('/api/hotels', hotelRouter);
 app.use('/api/rooms', roomRouter);
 app.use('/api/bookings', bookingRouter);
+// app.get('/',(req, res) =>res.send("Hello from server..we are do date"));
+
 app.listen(PORT,()=>console.log(`App started...: http://localhost:${PORT}/`))

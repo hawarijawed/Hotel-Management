@@ -1,23 +1,24 @@
 import React, { useState } from 'react'
 import Title from '../../components/Title'
-import {assets} from '../../assets/assets'
+import { assets } from '../../assets/assets'
 import { useAppContext } from '../../context/AppContext'
 import toast from 'react-hot-toast'
+import Loader from '../../components/Loader'
 const AddRoom = () => {
 
-  const {axios, getToken} = useAppContext();
+  const { axios, getToken } = useAppContext();
   const [images, setImages] = useState({
-    1:null,
-    2:null,
-    3:null,
-    4:null
+    1: null,
+    2: null,
+    3: null,
+    4: null
   })
 
   const [loading, setLoading] = useState(false);
   const [inputs, setInputs] = useState({
-    roomType:"",
-    pricePerNight:0,
-    amenities:{
+    roomType: "",
+    pricePerNight: 0,
+    amenities: {
       'Free Wifi': false,
       'Free Breakfast': false,
       'Room Service': false,
@@ -26,16 +27,35 @@ const AddRoom = () => {
     }
   });
 
-  const onSubmitHandler = async (e) =>{
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
-    if(!inputs.roomType ||
-       !inputs.pricePerNight ||
-       !inputs.amenities ||
-       !Object.values(images).some(image => image)
-    ){
-      toast.error("Some details are missing");
+    // if(!inputs.roomType ||
+    //    !inputs.pricePerNight ||
+    //    !inputs.amenities ||
+    //    !Object.values(images).some(image => image)
+    // ){
+    //   toast.error("Some details are missing");
+    // }
+    const { roomType, pricePerNight, amenities } = inputs;
+    const imageValues = Object.values(images);
+    console.log(inputs);
+    const isRoomTypeMissing = !roomType;
+    const isPriceMissing = !pricePerNight;
+    const isAmenitiesMissing = !amenities;
+    const areImagesMissing = !imageValues.some(image => image);
+    if (isRoomTypeMissing) {
+      toast.error("Room details are missing");
     }
 
+    if (isPriceMissing) {
+      toast.error("Price details are missing");
+    }
+    if (isAmenitiesMissing) {
+      toast.error("Amenities details are missing");
+    }
+    if (areImagesMissing) {
+      toast.error("Images are missing");
+    }
     setLoading(true);
     try {
       const formData = new FormData();
@@ -43,21 +63,21 @@ const AddRoom = () => {
       formData.append('pricePerNight', inputs.pricePerNight);
       const amenities = Object.keys(inputs.amenities).filter(key => inputs.amenities[key]);
       formData.append('amenities', JSON.stringify(amenities));
-      
-      Object.keys(images).forEach((key) =>{
+
+      Object.keys(images).forEach((key) => {
         images[key] && formData.append('images', images[key])
       });
 
-      const {data} = await axios.post('/api/rooms', formData,{
-        headers: `Bearer ${await getToken}`
+      const { data } = await axios.post('/api/rooms', formData, {
+        headers: { Authorization: `Bearer ${await getToken()}` }
       });
 
-      if(data.success){
+      if (data.success) {
         toast.success(data.message);
         setInputs({
-          roomType:'',
-          pricePerNight:0,
-          amenities:{
+          roomType: '',
+          pricePerNight: 0,
+          amenities: {
             'Free Wifi': false,
             'Free Breakfast': false,
             'Room Service': false,
@@ -66,44 +86,54 @@ const AddRoom = () => {
           }
         })
         setImages({
-          1:null,
-          2:null,
-          3:null,
-          4:null,
+          1: null,
+          2: null,
+          3: null,
+          4: null,
         });
       }
-      else{
+      else {
         toast.error(data.message);
+        console.log("Data creation error: ", data);
+
       }
     } catch (error) {
       toast.error(error.message);
+      console.log("Catch Error: ", error);
+
     }
-    finally{
+    finally {
       setLoading(false);
     }
   }
   return (
-    <form action="" onSubmit={onSubmitHandler}>
-      <Title align='left' font='outfit' title='Room Listings' subtitle='View, edit, or manage all listed rooms. Keep the information up to date to provide the best experience for users.' />
 
-       {/* Upload Area for Images */}
-       <p className='text-gray-800 mt-10'>Images</p>
-       <div className='grid grid-cols-2 sm:flex gap-4 my-2 flex-wrap'>
+    <div>
+      <form action="" onSubmit={onSubmitHandler}>
+        <Title align='left' font='outfit' title='Add Room' subtitle='Fill in the
+       details carefully. Enter accurate room details, pricing, and amenities, in order to enhance 
+       the user booking experience' />
+        {/* Upload Area for Images */}
+        <p className='text-gray-800 mt-10'>Images</p>
+        <div className='grid grid-cols-2 sm:flex gap-4 my-2 flex-wrap'>
           {
-            Object.keys(images).map((key)=>(
+            Object.keys(images).map((key) => (
               <label htmlFor={`roomImage${key}`} key={key}>
-                <img className='max-h-13 cursor-pointer opacity-80' src={images[key] ? URL.createObjectURL(images[key]): assets.uploadArea} alt="img-upload" />
+                <img className='max-h-13 cursor-pointer opacity-80' src={images[key] ? URL.createObjectURL(images[key]) : assets.uploadArea} alt="img-upload" />
                 <input type='file' accept='image/*' id={`roomImage${key}`} hidden
-                onChange={e=>setImages({...images, [key]:e.target.files[0]})} />
+                  onChange={e => setImages({ ...images, [key]: e.target.files[0] })} />
               </label>
             ))
           }
-       </div>
+        </div>
 
-       <div className='w-full flex max-sm:flex-col sm:gap-4 mt-4'>
+        <div className='w-full flex max-sm:flex-col sm:gap-4 mt-4'>
           <div className='flex-1 max-w-48'>
             <p className='text-gray-800 mt-4'>Room Type</p>
-            <select className='border opacity-70 border-gray-300 mt-1 rounded p-2 w-full'>
+            <select className='border opacity-70 border-gray-300 mt-1 rounded p-2 w-full'
+              onChange={e => setInputs({ ...inputs, roomType: e.target.value })}
+              value={inputs.roomType}
+            >
               <option value="">Select Room Type</option>
               <option value="Single Bed">Single Bed</option>
               <option value="Double Bed">Double Bed</option>
@@ -117,27 +147,34 @@ const AddRoom = () => {
               Price <span className='text-xs'>/night</span>
             </p>
             <input type="number" className='border border-gray-300 mt-1 rounded p-2 w-24' placeholder='0' value={inputs.pricePerNight}
-            onChange={e => setInputs({...inputs, pricePerNight: e.target.value})}/>
+              onChange={e => setInputs({ ...inputs, pricePerNight: e.target.value })} />
           </div>
-       </div>
+        </div>
 
         <p className='text-gray-800 mt-4'>Amenities</p>
-       <div className='flex flex-col flex-wrap mt-1 text-gray-400 max-w-sm '>
-          {Object.keys(inputs.amenities).map((amenity, index) =>(
+        <div className='flex flex-col flex-wrap mt-1 text-gray-400 max-w-sm '>
+          {Object.keys(inputs.amenities).map((amenity, index) => (
             <div key={index}>
-              <input type="checkbox"   id={`amenities${index+1}`} checked={inputs.amenities[amenity]} 
-              onChange={()=>setInputs({...inputs,amenities:{...inputs.amenities, [amenity]: !inputs.amenities[amenity]}})}/>
-              
-              <label className='ml-2 ' htmlFor={`amenities${index+1}`}>{amenity}</label>
+              <input type="checkbox" name={amenity} id={`amenities${index + 1}`} checked={inputs.amenities[amenity]}
+                onChange={() => setInputs({ ...inputs, amenities: { ...inputs.amenities, [amenity]: !inputs.amenities[amenity] } })} />
+
+              <label className='ml-2 ' htmlFor={`amenities${index + 1}`}>{amenity}</label>
             </div>
           ))}
-       </div>
+        </div>
 
-       <button className='bg-primary text-white px-8 py-2 rounded mt-8 cursor-pointer'>
-        Add Room
-       </button>
-    </form>
-  )
+        <button className='bg-primary text-white px-8 py-2 rounded mt-8 cursor-pointer'>
+          {loading ? "Adding.." : "Add Room"}
+        </button>
+      </form>
+
+      {loading && 
+      <div className='fixed inset-0 flex items-center justify-center bg-black/80 bg-opacity-50 z-50'> 
+        <Loader />
+      </div>
+      }
+    </div>
+  );
 }
 
 export default AddRoom
