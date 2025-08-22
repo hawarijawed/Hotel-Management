@@ -76,9 +76,12 @@ export const getUserBookings = async (req, res) => {
     try {
         const user = req.user._id;
         const bookings = await Booking.find({ user }).populate("room hotel").sort({ createdAt: -1 });
-
+        //console.log(bookings);
+        
         res.json({ success: true, bookings });
     } catch (error) {
+        console.log(error.message);
+        
         res.json({ success: false, message: "Failed to fetch all bookings" })
     }
 }
