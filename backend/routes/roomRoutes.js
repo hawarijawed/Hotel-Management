@@ -7,7 +7,7 @@ import { requireAuth } from "@clerk/express";
 const roomRouter = express.Router();
 
 roomRouter.post('/', upload.array("images", 4), requireAuth(),protect, createRoom);
-roomRouter.get('/',requireAuth(), getRooms);
+roomRouter.get('/', getRooms);
 roomRouter.get('/owner', requireAuth(),protect, getOwnerRooms);
 roomRouter.post('/toggle-availability', requireAuth(), protect, toggleRoomAvailability);
 
