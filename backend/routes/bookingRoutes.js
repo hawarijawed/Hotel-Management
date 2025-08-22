@@ -6,8 +6,8 @@ import { requireAuth } from "@clerk/express";
 const bookingRouter = express.Router();
 
 bookingRouter.post('/check-availability', checkAvailabilityApi);
-bookingRouter.post('/book', protect ,createBooking);
-bookingRouter.get('/user', protect, getUserBookings);
+bookingRouter.post('/book', requireAuth(), protect ,createBooking);
+bookingRouter.get('/user', requireAuth(), protect, getUserBookings);
 bookingRouter.get('/hotel', requireAuth(),protect, getHotelBookings);
 
 export default bookingRouter;

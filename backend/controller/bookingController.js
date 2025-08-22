@@ -33,15 +33,16 @@ export const checkAvailabilityApi = async (req, res) => {
 // API to create new booking
 export const createBooking = async (req, res) => {
     try {
-        const { room, checkInDate, checkOutDate } = req.body;
+        const { room, checkInDate, checkOutDate, guests } = req.body;
         const isAvailable = await checkAvailability({ checkInDate, checkOutDate, room });
         const user = req.user._id;
-
+        //console.log({room, checkInDate, checkOutDate, isAvailable, guests,user});
+        
         if (!isAvailable) {
             return res.json({ success: false, message: "Room is not available" });
         }
 
-        const roomData = Room.findById(room).populate("hotel");
+        const roomData = await Room.findById(room).populate("hotel");
         let totalPrice = roomData.pricePerNight;
 
         const checkIn = new Date(checkInDate);
@@ -54,15 +55,16 @@ export const createBooking = async (req, res) => {
             user,
             room,
             hotel: roomData.hotel._id,
-            guests: +guests,
             checkInDate,
             checkOutDate,
+            guest: +guests,
             totalPrice,
         });
-
-        res.json({ success: true, messae: "Booking has been made" });
+        // console.log("Booking successfull");
+        
+        res.json({ success: true, message: "Booking has been made" });
     } catch (error) {
-        console.log(error.messae);
+        console.log(error.message);
 
         res.json({ success: false, message: "Failed to create booking" })
     }

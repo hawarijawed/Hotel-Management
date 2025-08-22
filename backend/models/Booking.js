@@ -19,12 +19,6 @@ const bookingSchema = new mongoose.Schema({
         required:true,
     },
 
-    user:{
-        type:String, 
-        ref:"User",
-        required:true,
-    },
-
     checkInDate:{
         type:Date, 
         required:true,
