@@ -14,15 +14,30 @@ await connectCloudinary();
 const PORT = process.env.PORT || 8000;
 const app = express();
 
+
+
+// ✅ Configure CORS properly
 const allowedOrigins = [
-  "https://hotel-management-frontend-amber.vercel.app",
-  "http://localhost:3000"   // for local dev
+  "http://localhost:5173", // Vite local dev
+  "http://localhost:3000", // CRA/Next dev
+  "https://hotel-management-frontend-amber.vercel.app" // deployed frontend
 ];
+
 app.use(cors({
-    origin:allowedOrigins,
-    credentials:true,
-}
-));
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+}));
+
+// ✅ Handle preflight requests explicitly
+app.options("*", cors());
 
 
 //Middlewares
