@@ -14,7 +14,15 @@ await connectCloudinary();
 const PORT = process.env.PORT || 8000;
 const app = express();
 
-app.use(cors());
+const allowedOrigins = [
+  "https://hotel-management-frontend-amber.vercel.app",
+  "http://localhost:3000"   // for local dev
+];
+app.use(cors({
+    origin:allowedOrigins,
+    credentials:true,
+}
+));
 
 
 //Middlewares
