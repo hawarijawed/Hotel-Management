@@ -4,6 +4,7 @@ import { assets, facilityIcons, roomCommonData } from '../assets/assets';
 import StarRating from '../components/StarRating';
 import { useAppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
+import Loader from '../components/Loader';
 
 const RoomDetails = () => {
     const { id } = useParams();
@@ -14,7 +15,7 @@ const RoomDetails = () => {
     const [checkOutDate, setCheckOutDate] = useState(null);
     const [guests, setGuests] = useState(1);
     const [isAvailable, setIsAvailable] = useState(false);
-   
+    const [loading, setLoading] = useState(false);
     const checkAvailability = async () =>{
         try {
             //If check-in data is greater than check-out data
@@ -50,6 +51,7 @@ const RoomDetails = () => {
                 return checkAvailability();
             }
             else{
+                setLoading(true);
                 const {data} = await axios.post('/api/bookings/book',
                     {room:id, checkInDate, checkOutDate, guests,
                         paymentMethod:"Pay At Hotel"
@@ -58,13 +60,16 @@ const RoomDetails = () => {
                     toast.success(data.message);
                     navigate('/my-bookings');
                     scrollTo(0,0);
+                    setLoading(false);
                 }
                 else{
                     toast.error(data.message);
+                    setLoading(false);
                 }
             }
         } catch (error) {
             toast.error(error.message);
+            setLoading(false);
         }
     }
     useEffect(() => {
@@ -126,8 +131,8 @@ const RoomDetails = () => {
 
             {/* CheckIn & CheckOut form */}
             <form onSubmit={onSubmitHandler} className='flex flex-col md:flex-row items-start md:items-center
-        justify-between bg-white shadow-[0px_0px_20px_rgba(0,0,0,0.15)] p-6 rounded-xl
-        mx-auto mt-16 max-w-6xl'>
+                justify-between bg-white shadow-[0px_0px_20px_rgba(0,0,0,0.15)] p-6 rounded-xl
+                mx-auto mt-16 max-w-6xl'>
                 {/* Left Colum */}
                 <div className='flex flex-col flex-wrap md:flex-row items-start md:items-center
             gap-4 md:gap-10 text-gray-500'>
@@ -202,6 +207,11 @@ const RoomDetails = () => {
                 <button className='px-6 py-2.5 mt-4 bg-primary hover:bg-primary-dull active:scale-95
             transition-all text-white rounded-md text-base cursor-pointer'>Contact Now</button>
             </div>
+            {loading && 
+                  <div className='fixed inset-0 flex items-center justify-center bg-black/80 bg-opacity-50 z-50'> 
+                    <Loader />
+                  </div>
+            }
         </div>
     )
 }

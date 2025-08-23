@@ -8,7 +8,6 @@ export default function MyBookings() {
     
     const {axios, getToken, user} = useAppContext();
     const[bookings, setBookings] = useState([]);
-
     const fetchUserBooking = async()=>{
         try {
             const {data}  = await axios.get('/api/bookings/user',{headers:{Authorization: `Bearer ${await getToken()}`}});
