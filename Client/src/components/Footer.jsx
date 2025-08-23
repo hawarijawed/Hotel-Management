@@ -1,6 +1,6 @@
 import React from 'react'
-import { assets } from '../assets/assets'
-import favicon from '../../public/favicon.svg'
+import { assets } from '../assets/assets.js'
+import favicon from '/favicon.svg?url';
 const Footer = () => {
   return (
     <div className='bg-[#F6F9FC] text-gray-500/80 pt-8 px-6 md:px-16 lg:px-24 xl:px-32'>
