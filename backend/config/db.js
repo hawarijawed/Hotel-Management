@@ -7,10 +7,7 @@ const connectDB = async () => {
     if (isConnected) return;
 
     try {
-        const db = await mongoose.connect(`${process.env.MONGODB_URI}/HOTEL-BOOKING`, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        const db = await mongoose.connect(`${process.env.MONGODB_URI}/HOTEL-BOOKING`);
 
         isConnected = db.connections[0].readyState === 1;
 
